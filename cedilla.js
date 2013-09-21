@@ -7,6 +7,9 @@
 // for learning purposes (you should try doing more of that as well!).
 
 
+// Please refer to the original documentation for underscore.js for each method's
+// behavior and API.
+
 (function() {
   var ç = window.ç = {};
 
@@ -27,6 +30,10 @@
     return Object.prototype.toString.call(object) === '[object Object]';
   }
 
+  // Performs the `each` method when the `list` argument is an array (or anything
+  // that returns true for the `isArray` method.
+  //
+  // Uses the native `forEach` method if available in the browser.
   function arrayEach(list, iterator, context) {
     if (hasNativeForEach) {
       list.forEach(iterator, context);
@@ -38,12 +45,15 @@
     }
   }
 
+  // Performs the `each` method when the `list` argument is a JavaScript object.
   function jsObjectEach(list, iterator, context) {
     for (property in list) {
       iterator.call(context, list[property], property, list);
     }
   }
 
+  // ç.each method: iterstes over a list of elements, executing a function for each
+  // element.
   ç.each = function(list, iterator, context) {
     if (isArray(list)) {
       arrayEach(list, iterator, context);
