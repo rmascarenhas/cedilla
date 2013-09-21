@@ -43,5 +43,9 @@ assertist('cedilla.js', function(test) {
         test.assert(msg === 'ç.each works only with arrays and JavaScript objects.', 'Throws an error when the object is not a list');
       }
     })();
+
+    (function aliasForEach() {
+      test.assert(ç.each === ç.forEach, 'It is aliased to `forEach`');
+    })();
   });
 });

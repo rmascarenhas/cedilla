@@ -13,6 +13,16 @@
 (function() {
   var ç = window.ç = {};
 
+  // Creates an alias in the `ç` object.
+  //
+  // method        - the name of an existing method to be aliased.
+  // aliasedMethod - the name of the new, aliased method, with the same function as `method`.
+  function alias(method, aliasedMethod) {
+    if (typeof ç[method] === 'function') {
+      ç[aliasedMethod] = ç[method];
+    }
+  }
+
   // Collection Functions (Arrays and Objects)
   // =========================================
 
@@ -65,4 +75,6 @@
       throw('ç.each works only with arrays and JavaScript objects.');
     }
   };
+
+  alias('each', 'forEach');
 })();
