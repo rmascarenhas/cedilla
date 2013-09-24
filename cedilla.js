@@ -28,7 +28,9 @@
 
   // _.each
 
-  var hasNativeForEach = (typeof Array.prototype.forEach === 'function');
+  function hasNative(klass, method) {
+    return typeof klass.prototype[method] === 'function';
+  }
 
   // Relies on duck typing: every object that has a numeric `length` property is
   // considered to be an Array.
@@ -45,7 +47,7 @@
   //
   // Uses the native `forEach` method if available in the browser.
   function arrayEach(list, iterator, context) {
-    if (hasNativeForEach) {
+    if (hasNative(Array, 'forEach')) {
       list.forEach(iterator, context);
 
     } else {
@@ -77,4 +79,61 @@
   };
 
   alias('each', 'forEach');
+
+
+  // _.map
+
+  // Performs the `map` operation when `list `is know to be an Array-ish.
+  //
+  // Delegates to the native `map` implementation if available.
+  function arrayMap(list, iterator, context) {
+    if (hasNative(Array, 'map')) {
+      return list.map(iterator, context);
+
+    } else {
+      var mapped = [];
+
+      for (var i = 0; i < list.length; i++) {
+        mapped[i] = iterator.call(context, list[i], i, list);
+      }
+
+      return mapped;
+    }
+  }
+
+  // Perfoms the `map` operation when the `list` operator is known to be a JavaScript object.
+  function jsObjectMap(list, iterator, context) {
+    var mapped = [], i = 0;
+
+    for (property in list) {
+      mapped[i++] = iterator.call(context, list[property], property, list);
+    }
+
+    return mapped;
+  }
+
+  // Produces a new array with the result of calling `iterator` on each element.
+  //
+  // list     - the collection to be traversed.
+  // iterator - the function to be run for each element.
+  // context  - the context in which `iterator` should be run.
+  //
+  // The arguments passed to iterator are `(element, index, list)`.
+  //
+  // Example
+  //
+  //    ç.map([1, 2, 3], function(el) { return el * 2; }) // => [2, 4, 6]
+  ç.map = function(list, iterator, context) {
+    if (isArray(list)) {
+      return arrayMap(list, iterator, context);
+
+    } else if (isJsObject(list)) {
+      return jsObjectMap(list, iterator, context);
+
+    } else {
+      throw('ç.map works only with arrays and JavaScript objects.');
+    }
+  };
+
+  alias('map', 'collect');
 })();
