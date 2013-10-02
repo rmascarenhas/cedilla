@@ -105,4 +105,56 @@ assertist('cedilla.js', function(test) {
       test.assert(ç.map === ç.collect, 'It is aliased to `collect`');
     })();
   });
+
+  test.group('#reduce', function() {
+    (function worksForArrays() {
+      passed = true;
+
+      var reduced = ç.reduce(array, function(sum, el, index, list) {
+        passed = passed && el === array[index] && array === list;
+        return sum + el;
+      }, 0);
+
+      test.assert(passed, 'Properly passes arguments when list is an array');
+      test.assert(reduced === 6, 'Reduces to a value for arrays');
+    })();
+
+    (function worksForObjects() {
+      passed = true;
+
+      var reduced = ç.reduce(object, function(sum, el, property, list) {
+        passed = passed && el === object[property] && object === list
+        return sum + el;
+      }, 0);
+
+      test.assert(passed, 'Properly passes arguments when list is a JavaScript object');
+      test.assert(reduced === 3, 'Reduces to a value for JavaScript objects');
+    })();
+
+    (function passingContext() {
+      passed = true;
+      context = { property: 'value' };
+
+      ç.reduce(object, function() {
+        passed = passed && this.property === 'value';
+      }, 0, context);
+
+      test.assert(passed, 'Context is properly passed (objects)');
+    })();
+
+    (function throwingError() {
+      passed = true;
+
+      try {
+        ç.reduce(invalid, function() {});
+      } catch(msg) {
+        test.assert(msg === 'ç.reduce works only with arrays and JavaScript objects.', 'Throws an error when the object is not a list');
+      }
+    })();
+
+    (function aliases() {
+      test.assert(ç.reduce === ç.inject, 'It is aliased to `inject`');
+      test.assert(ç.reduce === ç.foldl, 'It is aliased to `foldl`');
+    })();
+  });
 });

@@ -136,4 +136,67 @@
   };
 
   alias('map', 'collect');
+
+  // _.reduce
+
+  // Applies the `reduce` method when the list argument is an array.
+  //
+  // This delegates to the native `reduce` method, when available in the browser.
+  // *Important*: the native version of this method does not support passing
+  // a custom contexto to the iterator method. So, if your browser supports
+  // the method, the context *will* be ignored.
+  function arrayReduce(list, iterator, memo, context) {
+    var reduced = memo;
+
+    if (hasNative(Array, 'reduce')) {
+      // warning: in native `reduce` call, you cannot pass the iterator context.
+      reduced = list.reduce(iterator, memo);
+
+    } else {
+      for (var i = 0; i < list.length; i++) {
+        reduced = iterator.call(context, reduced, list[i], i, list);
+      }
+    }
+
+    return reduced;
+  }
+
+  // Applies the `reduce` method when the list argument is a JavaScript object.
+  function jsObjectReduce(list, iterator, memo, context) {
+    var reduced = memo;
+
+    for (var property in list) {
+      reduced = iterator.call(context, reduced, list[property], property, list);
+    }
+
+    return reduced;
+  }
+
+  // Returns a computed value for a list, given a function.
+  //
+  // list     - the list to be processed. Can be either an array or a JavaScript object.
+  // iterator - the function to be called for each element. Arguments passed are:
+  //            the reduced value so far; the current element; the index; and the list itself.
+  // memo     - the initial value for the computed result.
+  // context  - the context in which the iterator function will be invoked.
+  //
+  // Returns the computed value.
+  //
+  // Example
+  //
+  // ç.reduce([1, 2, 3], function(result, el) { return result * el; }, 1) // => 6
+  ç.reduce = function(list, iterator, memo, context) {
+    if (isArray(list)) {
+      return arrayReduce(list, iterator, memo, context);
+
+    } else if (isJsObject(list)) {
+      return jsObjectReduce(list, iterator, memo, context);
+
+    } else {
+      throw('ç.reduce works only with arrays and JavaScript objects.');
+    }
+  };
+
+  alias('reduce', 'inject');
+  alias('reduce', 'foldl');
 })();
