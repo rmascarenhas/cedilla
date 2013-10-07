@@ -5,6 +5,20 @@ assertist('cedilla.js', function(test) {
       invalid = 3,
       passed = true;
 
+  function arrayEquals(a, b) {
+    if (a.length !== b.length) {
+      return false;
+    }
+
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   test.group('#each', function() {
     (function worksForArrays() {
       ç.each(array, function(el, index, list) {
@@ -155,6 +169,34 @@ assertist('cedilla.js', function(test) {
     (function aliases() {
       test.assert(ç.reduce === ç.inject, 'It is aliased to `inject`');
       test.assert(ç.reduce === ç.foldl, 'It is aliased to `foldl`');
+    })();
+  });
+
+  test.group('#reduceRight', function() {
+    (function worksForArrays() {
+      var passed = true, subject = [[0, 1], [2, 3], [4, 5]];
+
+      var reduced = ç.reduceRight(subject, function(collection, el, index, list) {
+        passed = passed && arrayEquals(el, subject[index]) && arrayEquals(subject, list);
+        return collection.concat(el);
+      }, []);
+
+      test.assert(passed, 'Properly passes arguments when list is an array');
+      test.assert(arrayEquals(reduced, [4, 5, 2, 3, 0, 1]), 'Right reduces to a value for arrays');
+    })();
+
+    (function throwingError() {
+      passed = true;
+
+      try {
+        ç.reduceRight(invalid, function() {});
+      } catch(msg) {
+        test.assert(msg === 'ç.reduceRight works only with arrays.', 'Throws an error when the object is not an array');
+      }
+    })();
+
+    (function aliases() {
+      test.assert(ç.reduceRight === ç.foldr, 'It is aliased to `foldr`');
     })();
   });
 });

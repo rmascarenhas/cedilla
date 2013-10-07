@@ -199,4 +199,44 @@
 
   alias('reduce', 'inject');
   alias('reduce', 'foldl');
+
+  // _.reduceRight
+
+  // Applies the `reduceRight` function when the `list` parameter is known to be
+  // an array.
+  //
+  // Special warning to be taken when the browser natively supports the `reduceRight`
+  // method: the context passed will be *ignored*. This should be changed as
+  // soon as we have ç.bind.
+  function arrayReduceRight(list, iterator, memo, context) {
+    var reduced = memo;
+
+    if (hasNative(Array, 'reduceRight')) {
+      reduced = list.reduceRight(iterator, memo);
+
+    } else {
+      for (var i = list.length - 1; i >= 0; i--) {
+        reduced = iterator.call(context, reduced, list[i], i, list);
+      }
+    }
+
+    return reduced;
+  }
+
+  // Public: reduces the passed list from right to left.
+  //
+  // list     - must be an Array.
+  // iterator - The function to be passed for each element.
+  // memo     - the initial value of the aggregated result.
+  // context  - context to be used when `iterator` is invoked.
+  ç.reduceRight = function(list, iterator, memo, context) {
+    if (isArray(list)) {
+      return arrayReduceRight(list, iterator, memo, context);
+
+    } else {
+      throw('ç.reduceRight works only with arrays.');
+    }
+  };
+
+  alias('reduceRight', 'foldr');
 })();
