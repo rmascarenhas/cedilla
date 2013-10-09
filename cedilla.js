@@ -239,4 +239,20 @@
   };
 
   alias('reduceRight', 'foldr');
+
+  // _.find
+
+  ç.find = function(list, iterator, context) {
+    if (isArray(list)) {
+      for (var i = 0; i < list.length; i++) {
+        if (iterator.call(context, list[i], i, list)) {
+          return list[i];
+        }
+      }
+    } else {
+      throw('ç.find works only with arrays.');
+    }
+  };
+
+  alias('find', 'detect');
 })();

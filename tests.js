@@ -199,4 +199,44 @@ assertist('cedilla.js', function(test) {
       test.assert(ç.reduceRight === ç.foldr, 'It is aliased to `foldr`');
     })();
   });
+
+  test.group('#find', function() {
+    (function findsExistingElement() {
+      var result = ç.find(array, function(num) {
+        return num % 2 === 0;
+      });
+
+      test.assert(result === 2, 'Returns matched element');
+    })();
+
+    (function returnsUndefined() {
+      var result = ç.find(array, function(num) {
+        return num > 100;
+      });
+
+      test.assert(typeof result === 'undefined', 'Returns undefined when no element matches');
+    })();
+
+    (function passingContext() {
+      var passed = false, context = { property: 'value' };
+
+      ç.find(array, function(num) {
+        passed = this.property === 'value';
+      }, context);
+
+      test.assert(passed, 'Context is properly passed');
+    })();
+
+    (function throwsError() {
+      try {
+        ç.find(invalid);
+      } catch (msg) {
+        test.assert(msg === 'ç.find works only with arrays.', 'Throws an error when collection is not an array');
+      }
+    })();
+
+    (function aliases() {
+      test.assert(ç.find === ç.detect, 'It is aliased to `detect`');
+    })();
+  });
 });
