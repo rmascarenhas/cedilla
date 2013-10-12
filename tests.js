@@ -239,4 +239,44 @@ assertist('cedilla.js', function(test) {
       test.assert(ç.find === ç.detect, 'It is aliased to `detect`');
     })();
   });
+
+  test.group('#filter', function() {
+    (function returnsMatchedElements() {
+      var result = ç.filter(array, function(num) {
+        return num % 2 === 1;
+      });
+
+      test.assert(arrayEquals(result, [1, 3]), 'Returns a list of matched elements');
+    })();
+
+    (function emptyList() {
+      var result = ç.filter(array, function(num) {
+        return num > 100;
+      });
+
+      test.assert(arrayEquals(result, []), 'Returns an empty list when no element match');
+    })();
+
+    (function passingContext() {
+      var passed = false, context = { property: 'value' };
+
+      ç.filter(array, function() {
+        passed = this.property === 'value';
+      }, context);
+
+      test.assert(passed, 'Properly passes context');
+    })();
+
+    (function throwingError() {
+      try {
+        ç.filter(invalid);
+      } catch (msg) {
+        test.assert(msg === 'ç.filter works only with arrays.', 'Throws an error when list is not an array');
+      }
+    })();
+
+    (function aliases() {
+      test.assert(ç.filter === ç.select, 'It is aliased to `select`');
+    })();
+  });
 });

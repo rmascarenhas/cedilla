@@ -270,4 +270,31 @@
   };
 
   alias('find', 'detect');
+
+  // _.filter
+
+  ç.filter = function(list, iterator, context) {
+    var matched;
+
+    if (isArray(list)) {
+      if (hasNative(Array, 'filter')) {
+        matched = list.filter(iterator, context);
+
+      } else {
+        matched = [];
+
+        for (var i = 0; i < list.length; i++) {
+          if (iterator.call(context, list[i], i, list)) {
+            matched.push(list[i]);
+          }
+        }
+      }
+
+      return matched;
+    } else {
+      throw('ç.filter works only with arrays.');
+    }
+  };
+
+  alias('filter', 'select');
 })();
