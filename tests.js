@@ -3,7 +3,12 @@ assertist('cedilla.js', function(test) {
   var array   = [1, 2, 3],
       object  = { one: 1, two: 2 },
       invalid = 3,
-      passed = true;
+      passed = true,
+      underscore = { name: 'underscore', extension: 'js', language: 'JavaScript' },
+      cedilla    = { name: 'cedilla',    extension: 'js', language: 'JavaScript' },
+      ack        = { name: 'ack',        extension: 'pl', language: 'Perl'       };
+      projects   = [underscore, ack, cedilla];
+
 
   function arrayEquals(a, b) {
     if (a.length !== b.length) {
@@ -12,6 +17,16 @@ assertist('cedilla.js', function(test) {
 
     for (var i = 0; i < a.length; i++) {
       if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  function objectEquals(a, b) {
+    for (var property in a) {
+      if (a.hasOwnProperty(property) && a[property] !== b[property]) {
         return false;
       }
     }
@@ -277,6 +292,28 @@ assertist('cedilla.js', function(test) {
 
     (function aliases() {
       test.assert(ç.filter === ç.select, 'It is aliased to `select`');
+    })();
+  });
+
+  test.group('#where', function() {
+    (function filtersObjects() {
+      var results = ç.where(projects, { extension: 'js', language: 'JavaScript' });
+
+      test.assert(arrayEquals([underscore, cedilla], results), 'Filters only matching objects');
+    })();
+
+    (function emptyResults() {
+      var results = ç.where(projects, { property: 'something' });
+
+      test.assert(arrayEquals([], results), 'Returns an empty list when no object match');
+    })();
+
+    (function throwingErrors() {
+      try {
+        ç.where(invalid, {});
+      } catch (msg) {
+        test.assert(msg === 'ç.where works only with arrays.', 'Throws an error if list is not an array');
+      }
     })();
   });
 });

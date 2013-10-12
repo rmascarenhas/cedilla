@@ -297,4 +297,53 @@
   };
 
   alias('filter', 'select');
+
+  // _.where
+
+  // Determines if an object is a superset of other.
+  //
+  // object     - the object being tested.
+  // properties - an object with the properties being ensured.
+  //
+  // Returns `true` if `object` has all properties in `properties`, or false otherwise.
+  //
+  // Examples
+  //
+  //    objectMatches({ name: 'Ruby', compiled: false, dynamic: true }, { compiled: false, dynamic: true })
+  //    // => true
+  //
+  //    objectMatches({ name: 'Ruby', compiled: false, dynamic: true }, { compiled: true, dynamic: true })
+  //    // => false
+  function objectMatches(object, properties) {
+    for (var property in properties) {
+      if (properties.hasOwnProperty(property) && object[property] !== properties[property]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Finds a subset from list that satisfies a given set of constraints.
+  //
+  // list       - an array of objects.
+  // properties - the properties that should be present in all returned objects.
+  //
+  // Returns a new collection with the matched objects.
+  ç.where = function(list, properties) {
+    if (isArray(list)) {
+      var result = [];
+
+      for (var i = 0; i < list.length; i++) {
+        if (objectMatches(list[i], properties)) {
+          result.push(list[i]);
+        }
+      }
+
+      return result;
+
+    } else {
+      throw('ç.where works only with arrays.');
+    }
+  };
 })();
