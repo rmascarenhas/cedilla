@@ -316,4 +316,18 @@ assertist('cedilla.js', function(test) {
       }
     })();
   });
+
+  test.group('#findWhere', function() {
+    (function returnsFirstOnList() {
+      var result = ç.findWhere(projects, { extension: 'js', language: 'JavaScript' });
+
+      test.assert(objectEquals(result, underscore), 'Returns the first matched object');
+    })();
+
+    (function undefinedOnNoMatches() {
+      var result = ç.findWhere(projects, { property: 'something' });
+
+      test.assert(result === undefined, 'Is undefined when no object match');
+    })();
+  });
 });

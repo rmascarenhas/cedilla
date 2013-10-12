@@ -346,4 +346,14 @@
       throw('ç.where works only with arrays.');
     }
   };
+
+  // _.findWhere
+
+  // Returns the first element that match the set of constraints given.
+  //
+  // list       - an array of objects.
+  // properties - the set of properties to be matched.
+  ç.findWhere = function(list, properties) {
+    ç.where(list, properties)[0];
+  };
 })();
