@@ -242,6 +242,21 @@
 
   // _.find
 
+  // Returns the first element in a list that matches a criteria.
+  //
+  // list     - an array
+  // iterator - a callback trying to find an element
+  // context  - the context in which the iteraror should be invoked.
+  //
+  // Example
+  //
+  //    ç.find([1, 2, 3, 4], function(n) {
+  //      return n % 2 === 1;
+  //    }); // => 1
+  //
+  // Note that this function will not traverse the whole collection, returning only
+  // the first element that matches. For a list of matched elements, see
+  // `ç.filter`.
   ç.find = function(list, iterator, context) {
     if (isArray(list)) {
       for (var i = 0; i < list.length; i++) {
