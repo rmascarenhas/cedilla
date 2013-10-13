@@ -330,4 +330,32 @@ assertist('cedilla.js', function(test) {
       test.assert(result === undefined, 'Is undefined when no object match');
     })();
   });
+
+  test.group('#reject', function() {
+    (function selectNonMatchingElements() {
+      var results = ç.reject(array, function(num) {
+        return num % 2 === 0;
+      });
+
+      test.assert(arrayEquals([1, 3], results), 'Returns non matching elements');
+    })();
+
+    (function emptyResults() {
+      var results = ç.reject(array, function(num) {
+        return num < 100;
+      });
+
+      test.assert(arrayEquals([], results), 'Returns empty list when all elements match');
+    })();
+
+    (function passingContext() {
+      var passed = true, context = { property: 'value' };
+
+      ç.reject(array, function() {
+        passed = passed && this.property === 'value';
+      }, context);
+
+      test.assert(passed, 'Correctly passes iterator context');
+    })();
+  });
 });

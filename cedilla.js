@@ -356,4 +356,20 @@
   ç.findWhere = function(list, properties) {
     ç.where(list, properties)[0];
   };
+
+  // _.reject
+
+  // Returns a list of elements that do not return a truthy value for the iterator.
+  //
+  // list     - an array.
+  // iterator - the function to be called for each element. If it returns true,
+  //            the element is not included in the results.
+  // context  - the context in which the iterator should be invoked.
+  ç.reject = function(list, iterator, context) {
+    var rejectIterator = function(el, index, collection) {
+      return !iterator.call(context, el, index, collection)
+    };
+
+    return ç.filter(list, rejectIterator);
+  };
 })();
